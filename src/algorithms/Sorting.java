@@ -28,6 +28,28 @@ public class Sorting {
             return returnList;
         }
 
+        int aI = 0; int bI = 0;
+        //boolean sameLength = (a.size()==b.size());
+
+        while(aI < a.size()&&bI < b.size()){
+            if (a.get(aI)==b.get(bI)){
+                returnList.add(a.get(aI)); aI++;
+                returnList.add(b.get(bI)); bI++;
+            } else if (a.get(aI)<b.get(bI)){
+                returnList.add(a.get(aI)); aI++;
+            } else {
+                returnList.add(b.get(bI)); bI++;
+            }
+        }
+
+            if (aI<a.size()){
+                returnList.addAll(a.subList(aI, a.size()));
+            }
+            if (bI<b.size()){
+                returnList.addAll(b.subList(bI, b.size()));
+            }
+
+/*
         ArrayList<Integer> shorter;
         ArrayList<Integer> longer;
         if (a.size()==b.size()){
@@ -51,9 +73,9 @@ public class Sorting {
             sCurrent = shorter.get(i);
             while (lCurrent<=sCurrent){
                 returnList.add(lCurrent);
-               /* if (lCurrent==sCurrent){
+                if (lCurrent==sCurrent){
                     returnList.add(sCurrent);
-                } */
+                }
                 index++;
                 if (index<longer.size()) {
                     lCurrent = longer.get(index);
@@ -68,7 +90,7 @@ public class Sorting {
         if (index<longer.size()) {
             returnList.addAll(longer.subList(index, longer.size()));
         }
-/*
+
         if (b.size()==1&&a.size()==1){
             if (a.get(0)<b.get(0)){
                 returnList.add(a.get(0)); returnList.add(b.get(0));
@@ -154,7 +176,7 @@ public class Sorting {
              return returnList;
          }
 
-         if (list.size()>1){
+        // if (list.size()>1){
              ArrayList<Integer> first = new ArrayList<>(list.subList(0, list.size()/2));
              ArrayList<Integer> second = new ArrayList<>(list.subList((list.size()/2), list.size()));
 
@@ -163,7 +185,7 @@ public class Sorting {
 
              returnList.addAll(merge(firstReturn, secondReturn));
 
-         }
+        // }
 /*
          if (second.size()==1&&first.size()==1){
              if (second.get(0)<first.get(0)){
