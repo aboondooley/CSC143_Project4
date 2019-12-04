@@ -61,7 +61,7 @@ public class MinHeap<T extends Comparable<T>> {
             tempParent = container.get(getParentIndex(here));
         }
     }
-
+/* Not needed
     public void bubbleUp(int index){
         // recursive procedure to "bubble up" the value of interest
 
@@ -71,7 +71,7 @@ public class MinHeap<T extends Comparable<T>> {
             swap(index, getParentIndex(index));
             bubbleUp(getParentIndex(index));
         }
-    }
+    }*/
 
     public void bubbleDown(int index){
         // recursive procedure to "bubble down" the value of interest
@@ -94,10 +94,8 @@ public class MinHeap<T extends Comparable<T>> {
             }
         }
         if (smallest != index){
-            //if (getLeftChildIndex(smallest)<container.size()&&getRightChildIndex(smallest)<size()) {
                 swap(index, smallest);
                 bubbleDown(smallest);
-           // }
         }
 
     }
