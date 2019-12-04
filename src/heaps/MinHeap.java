@@ -49,21 +49,90 @@ public class MinHeap<T extends Comparable<T>> {
      * @param value The value to be inserted.
      */
     public void insert(T value) {
-        /* YOUR CODE HERE */
+        //
+        container.add(value);
+        int here = container.size()-1;
+        T tempHereVal = container.get(here);
+        T tempParent = container.get(getParentIndex(here));
+        while(tempParent!=null&&tempHereVal.compareTo(tempParent)<0) {
+            swap(here, getParentIndex(here));
+            here = getParentIndex(here);
+            tempHereVal = container.get(here);
+            tempParent = container.get(getParentIndex(here));
+        }
+    }
+
+    public void bubbleUp(int index){
+        // recursive procedure to "bubble up" the value of interest
+
+        T tempParent = container.get(getParentIndex(index));
+        T tempIndex = container.get(index);
+        if (tempParent!=null&&index>0&&tempParent.compareTo(tempIndex)>0){
+            swap(index, getParentIndex(index));
+            bubbleUp(getParentIndex(index));
+        }
+    }
+
+    public void bubbleDown(int index){
+        // recursive procedure to "bubble down" the value of interest
+        int l = getLeftChildIndex(index); // check out children's indexes
+        int r = getRightChildIndex(index);
+        int smallest = index;
+
+        T tempIndex = container.get(index);
+        if (l<container.size()) {
+            T tempL = container.get(l);
+            if (tempL.compareTo(tempIndex) < 0) {
+                smallest = l;
+            }
+        }
+
+        if (r<container.size()) {
+            T tempR = container.get(r);
+            if (tempR.compareTo(tempIndex) < 0) {
+                smallest = r;
+            }
+        }
+        if (smallest != index){
+            //if (getLeftChildIndex(smallest)<container.size()&&getRightChildIndex(smallest)<size()) {
+                swap(index, smallest);
+                bubbleDown(smallest);
+           // }
+        }
+
     }
 
     public T peek() {
-        /* YOUR CODE HERE */
-        return null;
+        //
+        if (container.size()<2){
+            throw new NoSuchElementException();
+        }
+        return container.get(1);
     }
 
     public T remove() {
-        /* YOUR CODE HERE */
-        return null;
+        //
+        if (container.size()<2){
+            throw new NoSuchElementException();
+        }
+        T smallest = container.get(1);
+        swap(1, container.size()-1);
+        container.remove(container.size()-1);
+
+        if (container.size()>2) {
+            bubbleDown(1);
+        }
+        //container.remove(container.size()-1);
+        return smallest;
     }
 
     public int size() {
-        /* YOUR CODE HERE */
-        return 0;
+        //
+        int count =0;
+        for (T i : container){
+            count++;
+        }
+        count--;
+        return count;
     }
 }
