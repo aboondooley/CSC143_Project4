@@ -89,7 +89,7 @@ public class MinHeap<T extends Comparable<T>> {
 
         if (r<container.size()) {
             T tempR = container.get(r);
-            if (tempR.compareTo(tempIndex) < 0) {
+            if (tempR.compareTo(container.get(smallest)) < 0) {
                 smallest = r;
             }
         }
