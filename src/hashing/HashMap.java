@@ -67,7 +67,37 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             an O(1) replacement of a value.
          */
         ListIterator<Pair<K, V>> i = table[slot].listIterator();
+        Pair<K, V> putter = new Pair<>(key, value);
+// check equality of the keys and then use .set()
 
+        //Pair<K, V> old = new Pair<K,V>();
+        if(!i.hasNext()){
+            table[slot].add(putter);
+            size++;
+            return null;
+        }
+/*
+        if (!table[slot].contains(putter)){
+            table[slot].add(putter);
+            size++;
+            return null;
+        }
+*/
+        int index = -1;
+        while(i.hasNext()){
+            Pair<K, V> here = i.next();
+            index++;
+            if (key==null&&here.left==null){
+                table[slot].set(index, putter);
+                return here.right;
+            }
+            if(here.left.equals(key)){
+              table[slot].set(index, putter);
+                return here.right;
+            }
+        }
+        table[slot].add(putter);
+        size++;
 
         /* YOUR CODE HERE */
         return null;
@@ -77,6 +107,20 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         int slot = getSlot(key);
         if (table[slot] == null) {
             return null;
+        }
+        ListIterator<Pair<K, V>> i = table[slot].listIterator();
+        if(!i.hasNext()){
+            return null;
+        }
+
+        while(i.hasNext()){
+            Pair<K, V> here = i.next();
+            if (key==null&&here.left==null){
+                return here.right;
+            }
+            if(here!=null&&here.left.equals(key)){
+                return here.right;
+            }
         }
 
         /* YOUR CODE HERE */
@@ -94,7 +138,19 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             to do an O(1) remove on the list bucket.
          */
         ListIterator<Pair<K, V>> i = table[slot].listIterator();
+        if(!i.hasNext()){
+            return null;
+        }
 
+        while(i.hasNext()){
+            Pair<K, V> here = i.next();
+            if (key==null&&here.left==null){
+                return here.right;
+            }
+            if(here!=null&&here.left.equals(key)){
+                return here.right;
+            }
+        }
 
         /* YOUR CODE HERE */
         return null;
@@ -108,6 +164,11 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
 
     @Override
     public Iterator<Pair<K, V>> iterator() {
+        // use iterator on linked list.
+        // each bucket wil have it's own iterator.
+        // You have to walk through each iterator for each bucket.
+        // It requires us to use an iterator for each bucket.
+        // next should be constant time.
         /* DO NOT MODIFY */
         return new HashMapIterator(this);
     }
