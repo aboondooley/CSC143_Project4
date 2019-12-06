@@ -145,9 +145,13 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         while(i.hasNext()){
             Pair<K, V> here = i.next();
             if (key==null&&here.left==null){
+                i.remove();
+                size--;
                 return here.right;
             }
             if(here!=null&&here.left.equals(key)){
+                i.remove();
+                size--;
                 return here.right;
             }
         }
