@@ -207,14 +207,14 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                 return false;
             }
 
-            while (binKeeper<table.length&&table[binKeeper]==null) {
+            while (binKeeper<table.length&&(table[binKeeper]==null || listKeeper == table[binKeeper].size())) {
                         binKeeper++;
                         listKeeper = 0;
             }
 
-            if(table[binKeeper]!=null) {
+            if(binKeeper<table.length&&table[binKeeper]!=null) {
                 ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
-                for (int index = 0; index < listKeeper-1; index++) {
+                for (int index = 0; index < listKeeper; index++) {
                     i.next();
                     //progress++;
                 }
@@ -228,14 +228,15 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                 if (i.hasNext()) {
                     return true;
                 }
+
+
+                while (binKeeper < table.length && (table[binKeeper] == null || listKeeper == table[binKeeper].size())) {
+                    binKeeper++;
+                    listKeeper = 0;
+                }
             }
 
-            while (binKeeper<table.length&&table[binKeeper]==null) {
-                binKeeper++;
-                listKeeper = 0;
-            }
-
-            if(table[binKeeper]!=null) {
+            if(binKeeper < table.length&&table[binKeeper]!=null) {
                 return true;
             }
             //here++;
@@ -251,14 +252,14 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             if (!hasNext()){
                 throw new NoSuchElementException();
             }
-            while (binKeeper<table.length&&table[binKeeper]==null) {
+            while (binKeeper<table.length&&(table[binKeeper]==null || listKeeper == table[binKeeper].size())){
                 binKeeper++;
                 listKeeper=0;
             }
 
-            if (table[binKeeper] != null) {
+            if (binKeeper<table.length&&table[binKeeper] != null) {
                 ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
-                for (int index = 0; index < listKeeper-1; index++) {
+                for (int index = 0; index < listKeeper; index++) {
                     i.next();
                 }
                 if (i.hasNext()) {
@@ -267,11 +268,11 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                     progress++;
                     return i.next();
                 }
-                while (binKeeper<table.length&&table[binKeeper]==null) {
+                while (binKeeper<table.length&&(table[binKeeper]==null || listKeeper == table[binKeeper].size())) {
                     binKeeper++;
                     listKeeper = 0;
                 }
-                if (table[binKeeper]!=null) {
+                if (binKeeper<table.length&&table[binKeeper]!=null) {
                     ListIterator<Pair<K, V>> j = table[binKeeper].listIterator();
                     listKeeper++;
                     nextKeeper=true;
