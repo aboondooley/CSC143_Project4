@@ -76,13 +76,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             size++;
             return null;
         }
-/*
-        if (!table[slot].contains(putter)){
-            table[slot].add(putter);
-            size++;
-            return null;
-        }
-*/
+
         int index = -1;
         while(i.hasNext()){
             Pair<K, V> here = i.next();
@@ -180,11 +174,22 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
     private class HashMapIterator implements Iterator<Pair<K, V>> {
         HashMap<K, V> hashMap;
 
+        private int binKeeper;
+        private int listKeeper;
+        private boolean nextKeeper;
+        int progress;
+        //private int here;
+
+
         /* YOUR CODE HERE */
 
 
         HashMapIterator(HashMap<K, V> hashMap) {
             this.hashMap = hashMap;
+            binKeeper=0;
+            listKeeper=0;
+            nextKeeper=false;
+            progress=0;
 
             /* YOUR CODE HERE */
         }
@@ -198,18 +203,96 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
              */
 
             /* YOUR CODE HERE */
+            if(size==0){
+                return false;
+            }
+
+            while (binKeeper<table.length&&table[binKeeper]==null) {
+                        binKeeper++;
+                        listKeeper = 0;
+            }
+
+            if(table[binKeeper]!=null) {
+                ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
+                for (int index = 0; index < listKeeper-1; index++) {
+                    i.next();
+                    //progress++;
+                }
+            /*
+             if (listKeeper == table[binKeeper].size()-1) {
+                binKeeper++;
+                listKeeper = 0;
+            } else {
+            listKeeper++;
+            } */
+                if (i.hasNext()) {
+                    return true;
+                }
+            }
+
+            while (binKeeper<table.length&&table[binKeeper]==null) {
+                binKeeper++;
+                listKeeper = 0;
+            }
+
+            if(table[binKeeper]!=null) {
+                return true;
+            }
+            //here++;
             return false;
+            //return (here+1<=size);
         }
 
         @Override
         public Pair<K, V> next() {
             /* YOUR CODE HERE */
-            return null;
+            //int tableSize = table.length;
+            //Pair<K, V> result;
+            if (!hasNext()){
+                throw new NoSuchElementException();
+            }
+            while (binKeeper<table.length&&table[binKeeper]==null) {
+                binKeeper++;
+                listKeeper=0;
+            }
+
+            if (table[binKeeper] != null) {
+                ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
+                for (int index = 0; index < listKeeper-1; index++) {
+                    i.next();
+                }
+                if (i.hasNext()) {
+                    nextKeeper = true;
+                    listKeeper++;
+                    progress++;
+                    return i.next();
+                }
+                while (binKeeper<table.length&&table[binKeeper]==null) {
+                    binKeeper++;
+                    listKeeper = 0;
+                }
+                if (table[binKeeper]!=null) {
+                    ListIterator<Pair<K, V>> j = table[binKeeper].listIterator();
+                    listKeeper++;
+                    nextKeeper=true;
+                    return j.next();
+                }
+            }
+            throw new NoSuchElementException();
         }
 
         @Override
         public void remove() {
             /* YOUR CODE HERE */
+            if (!nextKeeper||size==0) {
+                throw new IllegalStateException();
+            }
+            ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
+            for (int index = 0; index < listKeeper; index++) {
+                i.next();// needs to call next at least once!
+            }
+            i.remove();
+            size--;
         }
     }
 
