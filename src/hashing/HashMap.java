@@ -74,6 +74,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         if(!i.hasNext()){
             table[slot].add(putter);
             size++;
+            this.expand();
             return null;
         }
 
@@ -92,7 +93,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         }
         table[slot].add(putter);
         size++;
-
+        this.expand();
         /* YOUR CODE HERE */
         return null;
     }
@@ -207,11 +208,12 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             if(size==0){
                 return false;
             }
-
+            // skip empty bins
             while (binKeeper<table.length&&(table[binKeeper]==null || listKeeper == table[binKeeper].size())) {
                         binKeeper++;
                         listKeeper = 0;
             }
+
 
             if(binKeeper<table.length&&table[binKeeper]!=null) {
                 ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
@@ -232,7 +234,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                     return true;
                 }
 
-
+                // check again to skip null bins
                 while (binKeeper < table.length && (table[binKeeper] == null || listKeeper == table[binKeeper].size())) {
                     binKeeper++;
                     listKeeper = 0;
@@ -319,7 +321,20 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
 
         /* YOUR CODE HERE */
 
-        this.table = newTable;
+        HashMap<K,V> newMap = new HashMap(table.length *2);
+
+        if(size/table.length>=LOAD_FACTOR){
+            Iterator<Pair<K, V>> i = this.iterator();
+            //this.table = newTable;
+            while(i.hasNext()){
+                Pair<K, V> newPair = i.next();
+                newMap.put(newPair.left, newPair.right);
+            }
+            this.table = newMap.table;
+            this.size = newMap.size;
+
+        }
+
     }
 
 }
