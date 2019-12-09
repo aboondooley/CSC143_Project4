@@ -1,6 +1,8 @@
-Name: 
-Student ID: 
-Email: 
-Hours Spent: 
-Bonus Points Claimed:
-Comments:
+Name: Alie Boon-Dooley
+Student ID: 870176985
+Email: asbd@uw.edu
+Hours Spent: 30 hours
+Bonus Points Claimed: +10 for .git
+Comments: I enjoyed this assignment and I didn't think HashMap was as hard as I thought it would be. I think it was around 30 hours, it might be a little under or over.
+That being said, the project still took me a very long time to implement! I think it is important to understand how HashMap actually works underneath the hood.
+I am afraid that my iterator is costly though, and I would love feedback on how I implemented it!

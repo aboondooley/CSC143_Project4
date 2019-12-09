@@ -68,9 +68,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
          */
         ListIterator<Pair<K, V>> i = table[slot].listIterator();
         Pair<K, V> putter = new Pair<>(key, value);
-// check equality of the keys and then use .set()
-
-        //Pair<K, V> old = new Pair<K,V>();
+        // if there are no elements already in the slot, add a new pair
         if(!i.hasNext()){
             table[slot].add(putter);
             size++;
@@ -78,19 +76,24 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             return null;
         }
 
+        // Otherwise, walk along the list and see if the key already exists there
         int index = -1;
         while(i.hasNext()){
             Pair<K, V> here = i.next();
             index++;
             if (key==null&&here.left==null){
+                // If the keys match at null, input the new value
                 table[slot].set(index, putter);
                 return here.right;
             }
+            // Otherwise, if the keys match, reset the value at that key
             if(here.left.equals(key)){
               table[slot].set(index, putter);
                 return here.right;
             }
         }
+        // Otherwise if it doesn't exist, add it to the end of the list
+        // Increase the size, and check if the hashmap needs to expand.
         table[slot].add(putter);
         size++;
         this.expand();
@@ -104,15 +107,19 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             return null;
         }
         ListIterator<Pair<K, V>> i = table[slot].listIterator();
+        // if the bin for the hash is empty, return null
         if(!i.hasNext()){
             return null;
         }
 
         while(i.hasNext()){
+            // Otherwise, check through each element to see if the keys match
             Pair<K, V> here = i.next();
+            // special case where the keys are both null
             if (key==null&&here.left==null){
                 return here.right;
             }
+            // normal case where keys match
             if(here!=null&&here.left.equals(key)){
                 return here.right;
             }
@@ -133,6 +140,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             to do an O(1) remove on the list bucket.
          */
         ListIterator<Pair<K, V>> i = table[slot].listIterator();
+        // if list is empty return null
         if(!i.hasNext()){
             return null;
         }
@@ -140,11 +148,14 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         while(i.hasNext()){
             Pair<K, V> here = i.next();
             if (key==null&&here.left==null){
+                // special null null case
                 i.remove();
                 size--;
                 return here.right;
             }
             if(here!=null&&here.left.equals(key)){
+                // regular matching keys case
+                // recommended above to use the iterator remove()
                 i.remove();
                 size--;
                 return here.right;
@@ -178,8 +189,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         private int binKeeper;
         private int listKeeper;
         private Pair<K, V> nextKeeper;
-        int progress;
-        //private int here;
+
 
 
         /* YOUR CODE HERE */
@@ -187,10 +197,9 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
 
         HashMapIterator(HashMap<K, V> hashMap) {
             this.hashMap = hashMap;
-            binKeeper=0;
-            listKeeper=0;
-            nextKeeper=null;
-            progress=0;
+            binKeeper=0; // keep track of what bin we are in
+            listKeeper=0; // keep track of how far along the current linked list
+            nextKeeper=null; // keeps track of whether next has been called and what was returned
 
 
             /* YOUR CODE HERE */
@@ -214,22 +223,16 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                         listKeeper = 0;
             }
 
-
+            // if the bin is not null and we have not indexed out of the array:
             if(binKeeper<table.length&&table[binKeeper]!=null) {
                 ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
+                // throw away the elements until we reach the current place in the list
+                // recommended above, instead of calling get(index)
                 for (int index = 0; index < listKeeper; index++) {
                    if (i.hasNext()) {
                        i.next();
                    }
-                    //progress++;
                 }
-            /*
-             if (listKeeper == table[binKeeper].size()-1) {
-                binKeeper++;
-                listKeeper = 0;
-            } else {
-            listKeeper++;
-            } */
                 if (i.hasNext()) {
                     return true;
                 }
@@ -244,24 +247,21 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             if(binKeeper < table.length&&table[binKeeper]!=null) {
                 return true;
             }
-            //here++;
             return false;
-            //return (here+1<=size);
         }
 
         @Override
         public Pair<K, V> next() {
             /* YOUR CODE HERE */
-            //int tableSize = table.length;
-            //Pair<K, V> result;
             if (!hasNext()){
                 throw new NoSuchElementException();
             }
+            // skip null bins
             while (binKeeper<table.length&&(table[binKeeper]==null || listKeeper == table[binKeeper].size())){
                 binKeeper++;
                 listKeeper=0;
             }
-
+            // throw away elements until we reach where the pointer element is
             if (binKeeper<table.length&&table[binKeeper] != null) {
                 ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
                 for (int index = 0; index < listKeeper; index++) {
@@ -269,16 +269,20 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                         i.next();
                     }
                 }
+                // if the linked list hasNext(), easy, we just increate the list keeper and return the values
+                // And save the pair as a global variable in case remove() is called
                 if (i.hasNext()) {
                     nextKeeper = i.next();
                     listKeeper++;
-                    progress++;
                     return nextKeeper;
                 }
+                // otherwise, need to jump down to the occupied bin to see find the next element
+                // skip null bins again
                 while (binKeeper<table.length&&(table[binKeeper]==null || listKeeper == table[binKeeper].size() || table[binKeeper].size() ==0)) {
                     binKeeper++;
                     listKeeper = 0;
                 }
+                // once an occupied bin is found, return the first element
                 if (binKeeper<table.length&&table[binKeeper]!=null) {
                     ListIterator<Pair<K, V>> j = table[binKeeper].listIterator();
                     listKeeper++;
@@ -286,10 +290,9 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
                         nextKeeper = j.next();
                         return nextKeeper;
                     }
-
-                   // return nextKeeper;
                 }
             }
+            // otherwise, there are no more occupied bins and exception is thrown
             throw new NoSuchElementException();
         }
 
@@ -299,17 +302,12 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
             if (nextKeeper==null||size==0) {
                 throw new IllegalStateException();
             }
-
+            // if the iterator goes through all the elements without removing, then the remove function does not remove the last element
             if (binKeeper==table.length&&!hasNext()){
                 throw new IllegalStateException();            }
-            /*
-            ListIterator<Pair<K, V>> i = table[binKeeper].listIterator();
-            for (int index = 0; index < listKeeper; index++) {
-                i.next();// needs to call next at least once!
-            }
-            */
-
+            // using the built in remove() during iteration function
             hashMap.remove(nextKeeper.left);
+            // set the pair to null, since we have removed the last element
             nextKeeper=null;
         }
     }
@@ -321,15 +319,17 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
 
         /* YOUR CODE HERE */
 
+        // I am not sure what the newTable is used for, but I won't modify
+        // I chose to create a new hashmap, twice as large, then put/rehash all the elements
         HashMap<K,V> newMap = new HashMap(table.length *2);
 
         if(size/table.length>=LOAD_FACTOR){
             Iterator<Pair<K, V>> i = this.iterator();
-            //this.table = newTable;
             while(i.hasNext()){
                 Pair<K, V> newPair = i.next();
                 newMap.put(newPair.left, newPair.right);
             }
+            // reset the implicit variable values to the new hash table.
             this.table = newMap.table;
             this.size = newMap.size;
 

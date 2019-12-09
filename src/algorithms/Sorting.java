@@ -28,13 +28,15 @@ public class Sorting {
             return returnList;
         }
 
-        int aI = 0; int bI = 0;
+        int aI = 0; int bI = 0; // keep track of where each list is at
 
         while(aI < a.size()&&bI < b.size()){
             if (a.get(aI)==b.get(bI)){
+                // if the two elements are equal add them both
                 returnList.add(a.get(aI)); aI++;
                 returnList.add(b.get(bI)); bI++;
             } else if (a.get(aI)<b.get(bI)){
+                // otherwise, add the smallest element
                 returnList.add(a.get(aI)); aI++;
             } else {
                 returnList.add(b.get(bI)); bI++;
@@ -42,6 +44,7 @@ public class Sorting {
         }
 
             if (aI<a.size()){
+                // if only one list has elements left, add them all because they will be largest
                 returnList.addAll(a.subList(aI, a.size()));
             }
             if (bI<b.size()){
@@ -63,12 +66,15 @@ public class Sorting {
              return returnList;
          }
 
+         // cut the list in two by creating two lists
              ArrayList<Integer> first = new ArrayList<>(list.subList(0, list.size()/2));
              ArrayList<Integer> second = new ArrayList<>(list.subList((list.size()/2), list.size()));
 
+             // recurse, until each list has only one element in it
              ArrayList<Integer> firstReturn = mergeSort(first);
              ArrayList<Integer> secondReturn = mergeSort(second);
 
+             // then call merge to zip the two lists together as it recurses back up
              returnList.addAll(merge(firstReturn, secondReturn));
 
 
