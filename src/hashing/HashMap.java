@@ -318,7 +318,6 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
         LinkedList<Pair<K, V>>[] newTable = (LinkedList<Pair<K, V>>[]) Array.newInstance(LinkedList.class, table.length * 2);
 
         /* YOUR CODE HERE */
-
         // I am not sure what the newTable is used for, but I won't modify
         // I chose to create a new hashmap, twice as large, then put/rehash all the elements
         HashMap<K,V> newMap = new HashMap(table.length *2);

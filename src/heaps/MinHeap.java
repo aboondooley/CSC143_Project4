@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
  */
 public class MinHeap<T extends Comparable<T>> {
     public ArrayList<T> container = new ArrayList<>();
+    public int size = 0;
     /* YOUR CODE HERE */
 
     public MinHeap() {
@@ -61,6 +62,7 @@ public class MinHeap<T extends Comparable<T>> {
             tempHereVal = container.get(here); // move up markers
             tempParent = container.get(getParentIndex(here));
         }
+        size++;
     }
 
     public void bubbleDown(int index){
@@ -117,17 +119,12 @@ public class MinHeap<T extends Comparable<T>> {
             bubbleDown(1);
         }
 
+        size--;
         return smallest;
     }
 
     public int size() {
-        // This is O(n), probably not the most efficient way to have done this
-        // loops through each element in the container and keep a count
-        int count =0;
-        for (T i : container){
-            count++;
-        }
-        count--; // subtract for the null root
-        return count;
+        return this.size;
+
     }
 }
