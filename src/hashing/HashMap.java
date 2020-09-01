@@ -319,7 +319,7 @@ public class HashMap<K, V> implements Iterable<Pair<K, V>> {
 
         /* YOUR CODE HERE */
         // I am not sure what the newTable is used for, but I won't modify
-        // I chose to create a new hashmap, twice as large, then put/rehash all the elements
+        // I chose to create a new hashmap, twice as large, then put all the elements
         HashMap<K,V> newMap = new HashMap(table.length *2);
 
         if(size/table.length>=LOAD_FACTOR){

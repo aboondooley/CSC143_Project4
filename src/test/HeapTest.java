@@ -22,6 +22,12 @@ public class HeapTest {
         int rightChildIndex = rootIndex * 2 + 1;
 
         if (leftChildIndex < heapContainer.size()) {
+            if(heapContainer.get(rootIndex).compareTo(heapContainer.get(leftChildIndex)) > 0){
+                System.out.println(rootIndex);
+            }
+            if(heapContainer.get(rootIndex).compareTo(heapContainer.get(leftChildIndex))>0){
+                System.out.println(rootIndex);
+            }
             assertTrue(heapContainer.get(rootIndex).compareTo(heapContainer.get(leftChildIndex)) <= 0);
             validateHeapOrdering(heapContainer, leftChildIndex);
         }
@@ -182,14 +188,14 @@ public class HeapTest {
     public void HeapSuperTest() {
         MinHeap<Integer> heap = new MinHeap<>();
         Random rand = new Random(0);
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 10000; ++i) { //1000
             heap.insert(rand.nextInt(100));
             validateHeap(heap);
         }
 
-        assertEquals(1000, heap.size());
+        assertEquals(10000, heap.size());
 
-        for (int i = 0; i < 1000; ++i) {
+        for (int i = 0; i < 10000; ++i) {
             Integer minValue = Integer.MAX_VALUE;
             int originalSize = heap.size();
 
@@ -198,8 +204,9 @@ public class HeapTest {
                     minValue = heap.container.get(j);
                 }
             }
+            validateHeap(heap);
 
-            assertEquals(minValue, heap.remove());
+            assertEquals(minValue, heap.remove()); // There is a problem with my bubbling up with remove
             assertEquals(originalSize - 1, heap.size());
             validateHeap(heap);
         }
